@@ -1,0 +1,31 @@
+{
+  "name": "AiInterview",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "server"
+  ],
+  "scripts": {
+    "start": "node index.js",
+    "dev": "npm run dev --workspace server",
+    "server:dev": "npm run dev --workspace server",
+    "install:server": "npm install --workspace server",
+    "start:all": "concurrently \"npm run dev --workspace server\" \"npm run dev --prefix client\""
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.12.0",
+    "@tailwindcss/vite": "^4.3.1",
+    "axios": "^1.17.0",
+    "crypto": "^1.0.1",
+    "firebase": "^12.14.0",
+    "motion": "^12.40.0",
+    "multer": "^2.1.1",
+    "react-icons": "^5.6.0",
+    "react-redux": "^9.3.0",
+    "react-router-dom": "^7.17.0",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
