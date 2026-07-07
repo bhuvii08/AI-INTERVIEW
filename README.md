@@ -1,6 +1,15 @@
 # AI Interview Platform
 
+[![Contributors](https://img.shields.io/github/contributors/bhuvii08/AI-INTERVIEW?style=for-the-badge)](https://github.com/bhuvii08/AI-INTERVIEW/graphs/contributors)
+[![Top Language](https://img.shields.io/github/languages/top/bhuvii08/AI-INTERVIEW?style=for-the-badge)](https://github.com/bhuvii08/AI-INTERVIEW)
+[![Languages Count](https://img.shields.io/github/languages/count/bhuvii08/AI-INTERVIEW?style=for-the-badge)](https://github.com/bhuvii08/AI-INTERVIEW)
+
 Full-stack AI-powered interview practice platform with Google auth, voice interview flow, analytics reports, and Razorpay credits.
+
+## Contributors & Languages
+
+- Contributors graph: https://github.com/bhuvii08/AI-INTERVIEW/graphs/contributors
+- Language stats: https://github.com/bhuvii08/AI-INTERVIEW
 
 ## Monorepo Structure
 
