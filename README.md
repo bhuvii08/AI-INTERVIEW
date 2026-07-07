@@ -38,13 +38,6 @@ npm run start:all
 
 Client scripts are available in `client/package.json` (`npm run lint`, `npm run build`, `npm run dev`).
 
-## Deployment Notes
-
-- Never commit real secrets to GitHub.
-- Use hosting environment variables for production keys.
-- Set `VITE_SERVER_URL` to deployed backend URL.
-- Set `CLIENT_URL` on server to deployed frontend URL.
-
 ## Documentation
 
 - Frontend docs: `client/README.md`
