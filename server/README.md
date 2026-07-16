@@ -79,6 +79,13 @@ Server base URL:
 - `RAZORPAY_KEY_SECRET`: Razorpay secret for verification
 - `CLIENT_URLS`: optional comma-separated allowed origins for CORS
 
+### Render Deployment Notes
+
+- Set environment variables in Render Dashboard -> Service -> Environment.
+- Do not wrap values in quotes in Render (use `MONGODB_URL=mongodb+srv://...`, not `"mongodb+srv://..."`).
+- If `MONGODB_URL` contains special characters in password (`@`, `:`, `/`, `?`, `#`), URL-encode the password.
+- After any env variable update in Render, trigger a redeploy.
+
 ## ▶️ Usage
 
 1. Start the backend service.
