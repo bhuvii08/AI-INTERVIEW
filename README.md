@@ -51,3 +51,4 @@ Client scripts are available in `client/package.json` (`npm run lint`, `npm run 
 
 - Frontend docs: `client/README.md`
 - Backend docs: `server/README.md`
+- Deployment guide: `DEPLOYMENT.md`
