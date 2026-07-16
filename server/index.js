@@ -10,8 +10,14 @@ import interviewRouter from "./routes/interview.route.js"
 import paymentRouter from "./routes/payment.route.js"
 
 const app = express()
-const allowedOrigins = [
+
+const configuredClientOrigins = [
     process.env.CLIENT_URL,
+    ...(process.env.CLIENT_URLS || "").split(",").map((origin) => origin.trim()).filter(Boolean),
+]
+
+const allowedOrigins = [
+    ...configuredClientOrigins,
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",
