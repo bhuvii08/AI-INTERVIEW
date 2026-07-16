@@ -17,6 +17,7 @@ This project is deployed as:
    - `MONGODB_URL`
    - `JWT_SECRET`
    - `CLIENT_URL` (set this to your Vercel frontend URL)
+   - `CLIENT_URLS` (optional comma-separated extra origins, e.g. Vercel preview URLs)
    - `OPENROUTER_API_KEY`
    - `RAZORPAY_KEY_ID`
    - `RAZORPAY_KEY_SECRET`

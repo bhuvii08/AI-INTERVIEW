@@ -77,6 +77,7 @@ Server base URL:
 - `OPENROUTER_API_KEY`: OpenRouter API credential
 - `RAZORPAY_KEY_ID`: Razorpay public key id
 - `RAZORPAY_KEY_SECRET`: Razorpay secret for verification
+- `CLIENT_URLS`: optional comma-separated allowed origins for CORS
 
 ## ▶️ Usage
 
