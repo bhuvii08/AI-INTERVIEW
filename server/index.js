@@ -27,6 +27,8 @@ const normalizeEnvValue = (value) => {
   return trimmed;
 };
 
+const normalizeOrigin = (origin) => normalizeEnvValue(origin).replace(/\/$/, "");
+
 const requiredEnvKeys = [
   "MONGODB_URL",
   "JWT_SECRET",
@@ -83,10 +85,10 @@ const validateEnvironment = () => {
 validateEnvironment();
 
 const configuredClientOrigins = [
-  normalizeEnvValue(process.env.CLIENT_URL),
+  normalizeOrigin(process.env.CLIENT_URL),
   ...normalizeEnvValue(process.env.CLIENT_URLS)
     .split(",")
-    .map((origin) => normalizeEnvValue(origin))
+    .map((origin) => normalizeOrigin(origin))
     .filter(Boolean),
 ];
 
@@ -101,19 +103,24 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, callback) {
-      console.log("Incoming Origin:", origin);
+      const normalizedOrigin = normalizeOrigin(origin);
+      console.log("Incoming Origin:", normalizedOrigin || "<none>");
 
       const isLocalhostOrigin =
-        /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin || "");
+        /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(normalizedOrigin || "");
 
-      if (!origin || allowedOrigins.includes(origin) || isLocalhostOrigin) {
+      // Allows Vercel production and preview deployments.
+      const isVercelOrigin =
+        /^https:\/\/([a-z0-9-]+)\.vercel\.app$/i.test(normalizedOrigin || "");
+
+      if (!origin || allowedOrigins.includes(normalizedOrigin) || isLocalhostOrigin || isVercelOrigin) {
         return callback(null, true);
       }
 
-      console.error("CORS blocked for origin:", origin);
+      console.error("CORS blocked for origin:", normalizedOrigin);
 
       return callback(
-        new Error(`CORS blocked for origin: ${origin}`)
+        new Error(`CORS blocked for origin: ${normalizedOrigin}`)
       );
     },
 
