@@ -101,22 +101,35 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, callback) {
-        console.log("Incoming Origin:", origin);
+      console.log("Incoming Origin:", origin);
+      console.log("Allowed Origins:", allowedOrigins);
 
       const isLocalhostOrigin = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(
         origin || "",
       );
 
-      // Allow non-browser clients (no origin) and known local/prod origins.
-      if (!origin || allowedOrigins.includes(origin) || isLocalhostOrigin) {
+      // Allow non-browser clients (Render health checks, Postman)
+      if (!origin) {
         return callback(null, true);
       }
+
+      // Allow localhost and production frontend
+      if (allowedOrigins.includes(origin) || isLocalhostOrigin) {
+        return callback(null, true);
+      }
+
+      console.log("Blocked Origin:", origin);
 
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+// Handle preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
