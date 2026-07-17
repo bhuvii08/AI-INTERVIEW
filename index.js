@@ -1,9 +1,4 @@
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "AI Interview backend is running",
-  });
-});
+
 import dotenv from "dotenv";
 
 // Root bootstrap so `node index.js` from workspace starts the backend app.
