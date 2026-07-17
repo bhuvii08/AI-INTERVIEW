@@ -102,43 +102,37 @@ app.use(
   cors({
     origin(origin, callback) {
       console.log("Incoming Origin:", origin);
-      console.log("Allowed Origins:", allowedOrigins);
 
-      const isLocalhostOrigin = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(
-        origin || "",
+      const isLocalhostOrigin =
+        /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin || "");
+
+      if (!origin || allowedOrigins.includes(origin) || isLocalhostOrigin) {
+        return callback(null, true);
+      }
+
+      console.error("CORS blocked for origin:", origin);
+
+      return callback(
+        new Error(`CORS blocked for origin: ${origin}`)
       );
-
-      // Allow non-browser clients (Render health checks, Postman)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      // Allow localhost and production frontend
-      if (allowedOrigins.includes(origin) || isLocalhostOrigin) {
-        return callback(null, true);
-      }
-
-      console.log("Blocked Origin:", origin);
-
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
+
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
-// Handle preflight requests
-app.options(/.*/, cors(corsOptions));
+
 
 app.use(express.json());
 app.use(cookieParser());
+
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "AI Interview backend is running",
   });
 });
+
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/interview", interviewRouter);
