@@ -48,6 +48,7 @@ Create `.env` in `client`:
 ```env
 VITE_FIREBASE_APIKEY=your_firebase_web_api_key
 VITE_RAZORPAY_KEY_ID=rzp_test_or_live_key_id
+VITE_SERVER_URL=https://aiinterview-api.onrender.com
 ```
 
 Start development server:
@@ -74,10 +75,10 @@ export const ServerUrl = import.meta.env.VITE_SERVER_URL || `http://${window.loc
 
 ## 🔗 Backend Integration
 
-The client currently uses this API base URL constant in `src/App.jsx`:
+The client uses this API base URL constant in `src/config/api.js`:
 
 ```js
-export const ServerUrl = "http://localhost:8000";
+export const ServerUrl = import.meta.env.VITE_SERVER_URL || "https://aiinterview-api.onrender.com";
 ```
 
 Ensure backend CORS allows:
