@@ -101,6 +101,8 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, callback) {
+        console.log("Incoming Origin:", origin);
+
       const isLocalhostOrigin = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(
         origin || "",
       );
