@@ -92,6 +92,7 @@ const configuredClientOrigins = [
 
 const allowedOrigins = [
   ...configuredClientOrigins,
+  "https://ai-interview-server-chi.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
