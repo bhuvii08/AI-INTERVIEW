@@ -16,17 +16,29 @@ function App() {
 
   const dispatch = useDispatch()
   useEffect(()=>{
-    applyAuthToken(getStoredAuthToken())
+    const storedAuthToken = getStoredAuthToken()
+    applyAuthToken(storedAuthToken)
+
+    if (!storedAuthToken) {
+      dispatch(setUserData(null))
+      return
+    }
 
     const getUser = async () => {
       try {
-        const result = await axios.get(ServerUrl + "/api/user/current-user", {withCredentials:true})
+        const result = await axios.get(ServerUrl + "/api/user/current-user", {
+          withCredentials:true,
+          headers: {
+            Authorization: `Bearer ${storedAuthToken}`,
+          },
+        })
         dispatch(setUserData(result.data))
       } catch (error) {
         if (error?.response?.status === 401) {
           setStoredAuthToken('')
+        } else {
+          console.log(error)
         }
-        console.log(error)
         dispatch(setUserData(null))
       }
     }

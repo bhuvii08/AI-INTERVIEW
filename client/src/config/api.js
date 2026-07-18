@@ -11,7 +11,7 @@ const normalizeUrl = (value) => {
 
 const envServerUrl = normalizeUrl(import.meta.env.VITE_SERVER_URL)
 const localFallbackUrl = `http://${browserHost}:8000`
-const productionFallbackUrl = 'https://aiinterview-api.onrender.com'
+const productionFallbackUrl = 'https://ai-interview-server-chi.vercel.app'
 
 // In production, avoid falling back to the frontend host:8000 because it breaks on Vercel.
 export const ServerUrl = envServerUrl || (isProductionBuild ? productionFallbackUrl : localFallbackUrl)

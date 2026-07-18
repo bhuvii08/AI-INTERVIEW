@@ -97,12 +97,27 @@ function Auth({isModel = false}) {
                     setStoredAuthToken(appToken)
                 }
 
-                const currentUserResult = await axios.get(
-                    ServerUrl + "/api/user/current-user",
-                    { withCredentials: true, timeout: 15000 }
-                )
+                let currentUser = result?.data?.user || result.data
+                try {
+                    const currentUserResult = await axios.get(
+                        ServerUrl + "/api/user/current-user",
+                        {
+                            withCredentials: true,
+                            timeout: 15000,
+                            headers: appToken
+                                ? {
+                                    Authorization: `Bearer ${appToken}`,
+                                }
+                                : undefined,
+                        }
+                    )
+                    currentUser = currentUserResult?.data || currentUser
+                } catch (currentUserError) {
+                    if (currentUserError?.response?.status !== 401) {
+                        throw currentUserError
+                    }
+                }
 
-                const currentUser = currentUserResult?.data || result.data
                 if (currentUser?.email?.toLowerCase?.() !== email) {
                     await axios.get(ServerUrl + "/api/auth/logout", { withCredentials: true }).catch(() => undefined)
                     setStoredAuthToken('')
