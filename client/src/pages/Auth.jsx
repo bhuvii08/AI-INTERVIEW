@@ -38,9 +38,19 @@ const mapBackendError = (error) => {
     const message = error?.response?.data?.message;
 
     if (status === 401) return "Session issue detected. Please try signing in again.";
-    if (!error?.response) return "Cannot reach server. Make sure backend is running on port 8000.";
+    if (!error?.response) return "Cannot reach server. Please check backend deployment and network connection.";
     return message || "Backend login failed. Please try again.";
 };
+
+const isIosSafari = () => {
+    if (typeof navigator === "undefined") return false
+
+    const ua = navigator.userAgent || ""
+    const isIOS = /iP(hone|ad|od)/i.test(ua)
+    const isWebKitSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua)
+
+    return isIOS && isWebKitSafari
+}
 
 function Auth({isModel = false}) {
     const dispatch = useDispatch()
@@ -143,6 +153,14 @@ function Auth({isModel = false}) {
             setIsLoading(true)
             setErrorMessage("")
             await signOut(auth).catch(() => undefined)
+
+            // iOS Safari handles redirect auth more reliably than popup auth.
+            if (isIosSafari()) {
+                setErrorMessage("Redirecting to Google...")
+                await signInWithRedirect(auth, provider)
+                return
+            }
+
             const popupTimeout = new Promise((_, reject) => {
                 popupTimer = setTimeout(() => {
                     const timeoutError = new Error("auth/popup-timeout")
