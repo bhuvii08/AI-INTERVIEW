@@ -78,6 +78,9 @@ Server base URL:
 - `RAZORPAY_KEY_ID`: Razorpay public key id
 - `RAZORPAY_KEY_SECRET`: Razorpay secret for verification
 - `CLIENT_URLS`: optional comma-separated allowed origins for CORS
+- `FIREBASE_PROJECT_ID`: Firebase project ID for Admin SDK
+- `FIREBASE_CLIENT_EMAIL`: Firebase Admin service account client email
+- `FIREBASE_PRIVATE_KEY`: Firebase Admin private key (with `\\n` escaped line breaks)
 
 ### Render Deployment Notes
 
@@ -101,6 +104,7 @@ Base path: `/api`
 
 - `POST /api/auth/google`
   - Login/register user
+  - Verifies Firebase ID token from `Authorization: Bearer <firebase_id_token>`
   - Body:
     ```json
     {

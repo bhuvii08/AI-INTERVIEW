@@ -3,7 +3,10 @@ import jwt from "jsonwebtoken"
 
 const isAuth = async (req,res,next) => {
     try {
-        const { token } = req.cookies || {}
+        const { token: cookieToken } = req.cookies || {}
+        const authHeader = req.headers?.authorization || ""
+        const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : ""
+        const token = cookieToken || bearerToken
 
         if (!token) {
             return res.status(401).json({ message: "Authentication token missing" })

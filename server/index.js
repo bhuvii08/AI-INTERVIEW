@@ -80,6 +80,20 @@ const validateEnvironment = () => {
       "Warning: CLIENT_URL is not set. Cross-site auth/CORS may fail from frontend.",
     );
   }
+
+  const firebaseAdminKeys = [
+    "FIREBASE_PROJECT_ID",
+    "FIREBASE_CLIENT_EMAIL",
+    "FIREBASE_PRIVATE_KEY",
+  ];
+  const missingFirebaseKeys = firebaseAdminKeys.filter(
+    (key) => !normalizeEnvValue(process.env[key]),
+  );
+  if (missingFirebaseKeys.length > 0) {
+    console.warn(
+      `Warning: Firebase Admin env is incomplete (${missingFirebaseKeys.join(", ")}). Google sign-in verification may fail.`,
+    );
+  }
 };
 
 validateEnvironment();

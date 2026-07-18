@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { getRedirectResult, signInWithPopup, signInWithRedirect, signOut } from 'firebase/auth';
 import { auth, provider } from '../utils/firebase';
 import axios from 'axios';
-import { ServerUrl } from '../config/api';
+import { ServerUrl, setStoredAuthToken } from '../config/api';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 import { useCallback, useEffect, useState } from 'react';
@@ -52,9 +52,10 @@ function Auth({isModel = false}) {
         const email = firebaseUser?.email?.trim()?.toLowerCase()
         const fallbackName = email ? email.split("@")[0] : "Candidate"
         const name = firebaseUser?.displayName?.trim() || fallbackName
+        const firebaseIdToken = await firebaseUser?.getIdToken?.(true)
 
-        if (!email) {
-            throw new Error("Google account is missing email")
+        if (!email || !firebaseIdToken) {
+            throw new Error("Google account token is missing")
         }
 
         let lastError
@@ -63,8 +64,19 @@ function Auth({isModel = false}) {
                 const result = await axios.post(
                     ServerUrl + "/api/auth/google",
                     { name, email },
-                    { withCredentials: true, timeout: 15000 }
+                    {
+                        withCredentials: true,
+                        timeout: 15000,
+                        headers: {
+                            Authorization: `Bearer ${firebaseIdToken}`,
+                        },
+                    }
                 )
+
+                const appToken = result?.data?.token
+                if (appToken) {
+                    setStoredAuthToken(appToken)
+                }
 
                 const currentUserResult = await axios.get(
                     ServerUrl + "/api/user/current-user",
@@ -74,6 +86,7 @@ function Auth({isModel = false}) {
                 const currentUser = currentUserResult?.data || result.data
                 if (currentUser?.email?.toLowerCase?.() !== email) {
                     await axios.get(ServerUrl + "/api/auth/logout", { withCredentials: true }).catch(() => undefined)
+                    setStoredAuthToken('')
                     dispatch(setUserData(null))
                     throw new Error("Session mismatch detected. Please try Google sign-in again.")
                 }
@@ -84,6 +97,9 @@ function Auth({isModel = false}) {
                 lastError = error
                 const isRetryable = !error?.response || error?.code === "ECONNABORTED"
                 if (!isRetryable || attempt === 2) {
+                    if (error?.response?.status === 401) {
+                        setStoredAuthToken('')
+                    }
                     throw error
                 }
 
@@ -111,6 +127,7 @@ function Auth({isModel = false}) {
                 const firebaseMessage = mapFirebaseError(error?.code)
                 const apiMessage = mapBackendError(error)
                 setErrorMessage(error?.code ? firebaseMessage : apiMessage)
+                setStoredAuthToken('')
                 dispatch(setUserData(null))
             } finally {
                 setIsLoading(false)
@@ -181,7 +198,8 @@ function Auth({isModel = false}) {
             const firebaseMessage = mapFirebaseError(error?.code)
             const apiMessage = mapBackendError(error)
             setErrorMessage(error?.code ? firebaseMessage : apiMessage)
-              dispatch(setUserData(null))
+                        setStoredAuthToken('')
+                        dispatch(setUserData(null))
         } finally {
             setIsLoading(false)
         }

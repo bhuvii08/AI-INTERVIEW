@@ -7,7 +7,7 @@ import { FaUserAstronaut } from "react-icons/fa";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ServerUrl } from '../config/api';
+import { ServerUrl, setStoredAuthToken } from '../config/api';
 import { setUserData } from '../redux/userSlice';
 import AuthModel from './AuthModel';
 import { signOut } from 'firebase/auth';
@@ -24,6 +24,7 @@ function Navbar() {
         try {
             await signOut(auth)
             await axios.get(ServerUrl + "/api/auth/logout" , {withCredentials:true})
+            setStoredAuthToken('')
             dispatch(setUserData(null))
             setShowCreditPopup(false)
             setShowUserPopup(false)
@@ -38,6 +39,7 @@ function Navbar() {
         try {
             await signOut(auth).catch(() => undefined)
             await axios.get(ServerUrl + "/api/auth/logout", { withCredentials: true }).catch(() => undefined)
+            setStoredAuthToken('')
             dispatch(setUserData(null))
             setShowCreditPopup(false)
             setShowUserPopup(false)

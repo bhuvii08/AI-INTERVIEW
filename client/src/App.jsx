@@ -10,17 +10,22 @@ import InterviewPage from './pages/InterviewPage'
 import InterviewHistory from './pages/InterviewHistory'
 import Pricing from './pages/Pricing'
 import InterviewReport from './pages/InterviewReport'
-import { ServerUrl } from './config/api'
+import { ServerUrl, getStoredAuthToken, applyAuthToken, setStoredAuthToken } from './config/api'
 
 function App() {
 
   const dispatch = useDispatch()
   useEffect(()=>{
+    applyAuthToken(getStoredAuthToken())
+
     const getUser = async () => {
       try {
         const result = await axios.get(ServerUrl + "/api/user/current-user", {withCredentials:true})
         dispatch(setUserData(result.data))
       } catch (error) {
+        if (error?.response?.status === 401) {
+          setStoredAuthToken('')
+        }
         console.log(error)
         dispatch(setUserData(null))
       }
