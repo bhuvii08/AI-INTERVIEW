@@ -161,7 +161,7 @@ app.use("/api/user", userRouter);
 app.use("/api/interview", interviewRouter);
 app.use("/api/payment", paymentRouter);
 
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 8000;
 
 const startServer = async () => {
   await connectDb();
