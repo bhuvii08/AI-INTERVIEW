@@ -100,33 +100,36 @@ const allowedOrigins = [
   "http://localhost:5175",
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      const normalizedOrigin = normalizeOrigin(origin);
-      console.log("Incoming Origin:", normalizedOrigin || "<none>");
+const corsOptions = {
+  origin(origin, callback) {
+    const normalizedOrigin = normalizeOrigin(origin);
+    console.log("Incoming Origin:", normalizedOrigin || "<none>");
 
-      const isLocalhostOrigin =
-        /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(normalizedOrigin || "");
+    const isLocalhostOrigin =
+      /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(normalizedOrigin || "");
 
-      // Allows Vercel production and preview deployments.
-      const isVercelOrigin =
-        /^https:\/\/([a-z0-9-]+)\.vercel\.app$/i.test(normalizedOrigin || "");
+    // Allows Vercel production and preview deployments.
+    const isVercelOrigin =
+      /^https:\/\/([a-z0-9-]+)\.vercel\.app$/i.test(normalizedOrigin || "");
 
-      if (!origin || allowedOrigins.includes(normalizedOrigin) || isLocalhostOrigin || isVercelOrigin) {
-        return callback(null, true);
-      }
+    if (
+      !origin ||
+      allowedOrigins.includes(normalizedOrigin) ||
+      isLocalhostOrigin ||
+      isVercelOrigin
+    ) {
+      return callback(null, true);
+    }
 
-      console.error("CORS blocked for origin:", normalizedOrigin);
+    console.error("CORS blocked for origin:", normalizedOrigin);
 
-      return callback(
-        new Error(`CORS blocked for origin: ${normalizedOrigin}`)
-      );
-    },
+    return callback(new Error(`CORS blocked for origin: ${normalizedOrigin}`));
+  },
+  credentials: true,
+};
 
-    credentials: true,
-  }),
-);
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 
 
