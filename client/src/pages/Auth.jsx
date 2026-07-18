@@ -52,15 +52,6 @@ const isIosSafari = () => {
     return isIOS && isWebKitSafari
 }
 
-const shouldPreferRedirectAuth = () => {
-    if (typeof window === "undefined") return false
-
-    const hostname = window.location.hostname
-    const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1"
-
-    return import.meta.env.PROD || !isLocalHost
-}
-
 function Auth({isModel = false}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -178,8 +169,8 @@ function Auth({isModel = false}) {
             setErrorMessage("")
             await signOut(auth).catch(() => undefined)
 
-            // Redirect is more reliable on deployed hosts and on iOS Safari.
-            if (isIosSafari() || shouldPreferRedirectAuth()) {
+            // iOS Safari handles redirect auth more reliably than popup auth.
+            if (isIosSafari()) {
                 setErrorMessage("Redirecting to Google...")
                 await signInWithRedirect(auth, provider)
                 return
